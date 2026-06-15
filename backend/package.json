@@ -1,0 +1,27 @@
+{
+  "name": "chatbot-backend",
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon",
+    "start": "node src/server.js",
+    "migrate": "psql \"$DATABASE_URL\" -f migrations/001_enterprise_upgrade.sql"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.2",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "pg": "^8.11.5",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
