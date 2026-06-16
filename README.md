@@ -1,37 +1,77 @@
-# 🎨 Atelier: Premium AI Platform
+# 🎨 Atelier: Premium AI Context Platform
 
-🚀 **[Experience the Live App Here](https://kaif-atelier-ai.vercel.app/)** 
+<div align="center">
+  <a href="https://kaif-atelier-ai.vercel.app/" target="_blank">
+    <img src="https://img.shields.io/badge/Live_Demo-kaif--atelier--ai.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  </a>
+  <img src="https://img.shields.io/badge/Next.js_14-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js 14" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/OpenAI_API-412991?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI API" />
+</div>
+
+<br />
+
+Atelier is a state-of-the-art independent AI context platform. It is engineered to deliver a fluid, latency-free chat experience while maintaining strict programmatic controls over API credit usage and prompt engineering variables.
+
+---
+
+> ### 🔒 Security & Intellectual Property Note
+> This repository is a public showcase of advanced front-end logic, UI/UX systems engineering, and interactive streaming states. **To protect proprietary AI training prompts, backend API keys, payment webhooks, and database schemas, the live backend engine operates on a secure, private repository.** Critical components like the typewriter engine and client-side interceptors are fully open-sourced here, while proprietary LLM tuning code is redacted.
 
 ---
 
-> 🔒 **Security & Architecture Note**  
-> This public repository serves as a demonstration of the platform's architecture, UI/UX, and core front-end capabilities. For security and proprietary reasons, sensitive business logic, payment gateway webhooks, database schemas, and proprietary AI algorithms are maintained in a separate private repository deployed to production. **As a result, cloning this repository will not yield a functional local build, as critical backend files have been intentionally redacted.**
+## ✨ Features & Capabilities Demoed Here
+
+*   **⚡ Streamwriter Typewriter Rendering Engine**
+    *   Smooth React rendering loop that buffers incoming LLM stream chunks.
+    *   Eliminates visual "flicker" and integrates typing states + micro-skeleton loaders.
+*   **🛡️ CreditGuard Client Interceptor**
+    *   Client-side middleware that blocks unauthorized requests if token credits are exhausted.
+    *   Saves server resources and prevents token cost runaways.
+*   **📂 Contextual Session Organizer**
+    *   Date-aware categorization logic dynamically grouping chats into *Today*, *Previous 7 Days*, and *Older*.
+    *   Optimized list rendering for seamless navigation.
 
 ---
 
-## 🌟 Overview
-Atelier is a state-of-the-art, independent AI platform designed with a focus on contextual intelligence and premium user experience. This repository showcases the architectural foundation, modern interface design, and front-end component structure of the application.
+## 🛠️ Tech Stack & Design Architecture
 
-## ✨ Front-End Logic & UI Capabilities
-While the backend is hidden, this repository demonstrates advanced front-end engineering, including:
-
-- **Persistent Chat UI Logic:** Dynamic grouping of chat sessions (Today / Previous 7 Days / Older) with seamless state management.
-- **Typewriter Rendering Engine:** Custom streaming-style typewriter effects for assistant messages, complete with animated typing dots and skeleton loaders.
-- **CreditGuard Interceptor:** A front-end middleware mechanism that elegantly intercepts insufficient balance states (402 errors) and triggers the dynamic upgrade modal without breaking the user experience.
-- **Interactive Feedback System:** Front-end implementation of the Reinforcement Learning from Human Feedback (RLHF) UI, allowing users to rate responses (Thumbs Up/Down) seamlessly.
-- **Fluid Animations:** Heavy integration with Framer Motion to provide a dynamic, living interface with subtle micro-animations that enhance user engagement.
-
-## 🛠️ Technology Stack
-- **Core:** React, TypeScript, TanStack Start, Vite
-- **Styling:** Vanilla CSS & TailwindCSS (Architected for Maximum Aesthetic Control)
-- **Interactivity:** Framer Motion
-
-## 📂 Exploring the Showcase
-You are welcome to explore the codebase to view the structural implementation of the user interface:
-- `/src/components`: Contains the core modular UI elements, including the `CreditGuard`, chat visualizers, and modals.
-- `/src/routes`: Demonstrates the application's blazing-fast, file-based routing structure.
-
-*Note: Directories and files related to database connectivity, AI gateways, and billing webhook logic have been scrubbed to protect proprietary business logic.*
+| Layer | Technology | Key Implementation |
+| :--- | :--- | :--- |
+| **Framework** | Next.js 14 (App Router) | High-performance React framework driving modern streaming routes. |
+| **Styling** | Tailwind CSS + Radix UI | Modular, accessible primitives styled with fluid utility classes. |
+| **State** | React Context & Hooks | Lightweight, fast state synchronization for active chat sessions. |
 
 ---
-*Designed & Engineered by Sheikh Kaif Sadiq*
+
+## 📐 Streaming UX Architecture
+
+```mermaid
+sequenceDiagram
+    participant User as React Client UI
+    participant Interceptor as CreditGuard Interceptor
+    participant Server as Private Proxy Server
+    participant OpenAI as OpenAI Streaming API
+
+    User->>Interceptor: Submit Prompt
+    Note over Interceptor: Validate local session credits
+    Interceptor->>Server: Send Request (Secure API)
+    Server->>OpenAI: Request Chat Completion (Stream)
+    OpenAI-->>Server: Stream Chunks
+    Server-->>User: Stream Buffered Chunks
+    Note over User: Buffering in Typewriter Engine (Fluent UI)
+```
+
+---
+
+## ⚙️ Running Locally (Frontend Only)
+
+1. Clone this repository.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
