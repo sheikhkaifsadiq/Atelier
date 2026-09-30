@@ -1,5 +1,5 @@
 // Server-only. Reads OPENAI_API_KEY from process.env (now containing Groq API Key).
-export const MODEL_VERSION = "gemini-1.5-flash";
+export const MODEL_VERSION = "gemini-2.5-flash";
 const GATEWAY_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
 
 const SYSTEM_PROMPT =
