@@ -1,5 +1,7 @@
 # Atelier: The Next-Generation Enterprise AI Platform
 
+🚀 **Live Demo:** [https://kaif-atelier-ai.vercel.app/](https://kaif-atelier-ai.vercel.app/)
+
 Atelier is an enterprise-grade AI chatbot platform designed for seamless performance, dynamic styling, and an unparalleled developer experience. It is built entirely on modern web primitives for high scalability and responsiveness.
 
 ## 🚀 Tech Stack
