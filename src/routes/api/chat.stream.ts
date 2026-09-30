@@ -92,9 +92,9 @@ export const Route = createFileRoute("/api/chat/stream")({
           .limit(10);
         const history = (hist ?? []).reverse();
 
-        const key = process.env.OPENAI_API_KEY!;
+        const key = process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY!;
         const upstream = await fetch(
-          "https://api.groq.com/openai/v1/chat/completions",
+          "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
           {
             method: "POST",
             headers: {
