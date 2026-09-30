@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SmartLogo } from "@/components/SmartLogo";
 import deskPhoto from "@/assets/desk.jpg";
 
+const GITHUB_URL = "https://github.com/sheikhkaifsadiq";
+
+// Trigger vercel deployment testing
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -364,6 +367,39 @@ function Landing() {
           <div className="flex items-center gap-4">
             <Link to="/auth" className="hover:text-foreground">Sign in</Link>
             <a href="#story" className="hover:text-foreground">The idea</a>
+          </div>
+        </div>
+
+        {/* Author credit */}
+        <div className="border-t border-border/60">
+          <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
+            <p className="font-hand text-clay text-base rotate-[-1deg]">
+              a portfolio piece, made with care
+            </p>
+            <div className="flex items-center gap-4">
+              <a
+                href="https://github.com/sheikhkaifsadiq/Atelier"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 hover:text-foreground transition"
+              >
+                <Github className="w-4 h-4" />
+                <span>Source Code</span>
+              </a>
+              <span className="text-border">|</span>
+              <a
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 hover:text-foreground transition"
+              >
+                <span>
+                  Designed &amp; built by{" "}
+                  <span className="text-foreground font-medium">Sheikh Kaif Sadiq</span>
+                </span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
           </div>
         </div>
       </footer>

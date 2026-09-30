@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Loader2, Copy, Check, Github, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import atelierWordmark from "@/assets/atelier-logo-full.png";
+import { DEMO_EMAIL, DEMO_PASSWORD } from "@/lib/demo";
+import { ensureDemoUser } from "@/lib/demo.functions";
+
+const GITHUB_URL = "https://github.com/sheikhkaifsadiq";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -23,6 +27,7 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState<"email" | "password" | null>(null);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -72,6 +77,39 @@ function AuthPage() {
     }
   };
 
+  const onDemo = async () => {
+    setLoading(true);
+    try {
+      // Make sure the shared demo account exists (self-heals a fresh or
+      // paused database) before we try to sign in.
+      await ensureDemoUser();
+    } catch {
+      // Non-fatal: the account may already exist. Continue to sign-in.
+    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email: DEMO_EMAIL,
+      password: DEMO_PASSWORD,
+    });
+    setLoading(false);
+    if (error) {
+      toast.error(
+        "Demo sign-in failed. Please try again in a moment or create an account.",
+      );
+    } else {
+      toast.success("Signed in to the demo account. Welcome!");
+    }
+  };
+
+  const copy = async (value: string, which: "email" | "password") => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(which);
+      setTimeout(() => setCopied(null), 1500);
+    } catch {
+      toast.error("Couldn't copy — please copy manually.");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted px-4">
       <motion.div
@@ -80,9 +118,53 @@ function AuthPage() {
         transition={{ duration: 0.35 }}
         className="w-full max-w-md rounded-2xl border border-border bg-card/80 backdrop-blur shadow-2xl p-8"
       >
-        <div className="flex flex-col items-center text-center gap-2 mb-8">
+        <div className="flex flex-col items-center text-center gap-2 mb-6">
           <img src={atelierWordmark} alt="Atelier" className="h-10 w-auto object-contain" />
           <p className="text-sm text-muted-foreground">Sign in to continue</p>
+        </div>
+
+        {/* Demo / reviewer notice */}
+        <div className="mb-6 rounded-xl border border-primary/30 bg-primary/5 p-4 text-left">
+          <div className="flex items-start gap-2">
+            <Wand2 className="w-4 h-4 mt-0.5 text-primary shrink-0" />
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-foreground">
+                Just here to look around?
+              </p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                For testing, sign in with the demo account below — or create your
+                own. The demo starts with free credits and resets periodically.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-3 space-y-1.5">
+            <CredRow
+              label="Email"
+              value={DEMO_EMAIL}
+              copied={copied === "email"}
+              onCopy={() => copy(DEMO_EMAIL, "email")}
+            />
+            <CredRow
+              label="Password"
+              value={DEMO_PASSWORD}
+              copied={copied === "password"}
+              onCopy={() => copy(DEMO_PASSWORD, "password")}
+            />
+          </div>
+
+          <Button
+            type="button"
+            className="w-full mt-3"
+            onClick={onDemo}
+            disabled={loading}
+          >
+            {loading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              "Try the demo account →"
+            )}
+          </Button>
         </div>
 
         <Tabs defaultValue="login" className="w-full">
@@ -139,7 +221,54 @@ function AuthPage() {
         <p className="mt-5 text-[11px] text-center text-muted-foreground">
           New accounts start with 100 free credits.
         </p>
+
+        <div className="mt-6 border-t border-border pt-4 text-center">
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground transition"
+          >
+            <Github className="w-3.5 h-3.5" />
+            Designed &amp; built by Sheikh Kaif Sadiq
+          </a>
+        </div>
       </motion.div>
+    </div>
+  );
+}
+
+function CredRow({
+  label,
+  value,
+  copied,
+  onCopy,
+}: {
+  label: string;
+  value: string;
+  copied: boolean;
+  onCopy: () => void;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-2 rounded-md bg-background/60 border border-border px-2.5 py-1.5">
+      <div className="min-w-0">
+        <span className="text-[10px] uppercase tracking-wide text-muted-foreground mr-2">
+          {label}
+        </span>
+        <code className="text-xs text-foreground break-all">{value}</code>
+      </div>
+      <button
+        type="button"
+        onClick={onCopy}
+        aria-label={`Copy ${label.toLowerCase()}`}
+        className="shrink-0 text-muted-foreground hover:text-foreground transition"
+      >
+        {copied ? (
+          <Check className="w-3.5 h-3.5 text-primary" />
+        ) : (
+          <Copy className="w-3.5 h-3.5" />
+        )}
+      </button>
     </div>
   );
 }
