@@ -1,77 +1,69 @@
-# 🎨 Atelier: Premium AI Context Platform
+# AI ChatBot — Enterprise Upgrade
 
-<div align="center">
-  <a href="https://kaif-atelier-ai.vercel.app/" target="_blank">
-    <img src="https://img.shields.io/badge/Live_Demo-kaif--atelier--ai.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
-  </a>
-  <img src="https://img.shields.io/badge/Next.js_14-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js 14" />
-  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-  <img src="https://img.shields.io/badge/OpenAI_API-412991?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI API" />
-</div>
+Frontend: React (CRA) · Backend: Node.js + Express + PostgreSQL · AI: Gemini.
 
-<br />
+## Run locally
 
-Atelier is a state-of-the-art independent AI context platform. It is engineered to deliver a fluid, latency-free chat experience while maintaining strict programmatic controls over API credit usage and prompt engineering variables.
+```bash
+# 1. Configure env
+cp backend/.env.example backend/.env   # fill in DATABASE_URL, JWT_SECRET, PASSWORD_PEPPER, GEMINI_API_KEY, GOOGLE_* (optional)
 
----
+# 2. Apply migrations
+cd backend && npm install && npm run migrate
 
-> ### 🔒 Security & Intellectual Property Note
-> This repository is a public showcase of advanced front-end logic, UI/UX systems engineering, and interactive streaming states. **To protect proprietary AI training prompts, backend API keys, payment webhooks, and database schemas, the live backend engine operates on a secure, private repository.** Critical components like the typewriter engine and client-side interceptors are fully open-sourced here, while proprietary LLM tuning code is redacted.
+# 3. Start backend (port 5000)
+npm run dev
 
----
-
-## ✨ Features & Capabilities Demoed Here
-
-*   **⚡ Streamwriter Typewriter Rendering Engine**
-    *   Smooth React rendering loop that buffers incoming LLM stream chunks.
-    *   Eliminates visual "flicker" and integrates typing states + micro-skeleton loaders.
-*   **🛡️ CreditGuard Client Interceptor**
-    *   Client-side middleware that blocks unauthorized requests if token credits are exhausted.
-    *   Saves server resources and prevents token cost runaways.
-*   **📂 Contextual Session Organizer**
-    *   Date-aware categorization logic dynamically grouping chats into *Today*, *Previous 7 Days*, and *Older*.
-    *   Optimized list rendering for seamless navigation.
-
----
-
-## 🛠️ Tech Stack & Design Architecture
-
-| Layer | Technology | Key Implementation |
-| :--- | :--- | :--- |
-| **Framework** | Next.js 14 (App Router) | High-performance React framework driving modern streaming routes. |
-| **Styling** | Tailwind CSS + Radix UI | Modular, accessible primitives styled with fluid utility classes. |
-| **State** | React Context & Hooks | Lightweight, fast state synchronization for active chat sessions. |
-
----
-
-## 📐 Streaming UX Architecture
-
-```mermaid
-sequenceDiagram
-    participant User as React Client UI
-    participant Interceptor as CreditGuard Interceptor
-    participant Server as Private Proxy Server
-    participant OpenAI as OpenAI Streaming API
-
-    User->>Interceptor: Submit Prompt
-    Note over Interceptor: Validate local session credits
-    Interceptor->>Server: Send Request (Secure API)
-    Server->>OpenAI: Request Chat Completion (Stream)
-    OpenAI-->>Server: Stream Chunks
-    Server-->>User: Stream Buffered Chunks
-    Note over User: Buffering in Typewriter Engine (Fluent UI)
+# 4. Start frontend (port 3000) — in another terminal
+cd ../frontend && npm install && npm start
 ```
 
----
+## What's new (vs. the original ZIP)
 
-## ⚙️ Running Locally (Frontend Only)
+### Security
+- **Salt + Pepper** password hashing: `HMAC-SHA256(password, PASSWORD_PEPPER)` → bcrypt (cost 12). Legacy hashes auto-upgrade on first successful login.
+- Strict per-user ownership checks on every session/message/feedback row.
 
-1. Clone this repository.
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
+### API
+- Versioned routing under `/api/v1/{auth,chat,users,sessions,feedback}`. Legacy `/api/*` paths preserved.
+
+### Chat
+- Persistent chat sessions with titles, sorted by recency, grouped Today / Previous 7 Days / Older in the UI.
+- **Contextual memory**: last 10 messages of the session are sent to Gemini on every call.
+- Streaming-style typewriter rendering on assistant messages, skeleton loaders, animated typing dots.
+- Thumbs-up / thumbs-down feedback per assistant message.
+
+### Billing
+- `users.credits` (NUMERIC). Default 100. Costs: text 0.1 / image 0.5 / audio 0.3.
+- `requireCredits` middleware blocks calls with `402` when the balance is insufficient.
+- Frontend `CreditGuard` intercepts 402 and opens the upgrade modal.
+
+### Google OAuth
+- `GET /api/v1/auth/google` → callback returns to `${FRONTEND_URL}/auth/callback?accessToken=…&refreshToken=…`.
+- Users found by `google_id` first, then merged onto matching email if one exists.
+
+### RLHF pipeline
+- Every assistant reply is logged async into `training_data_pipeline` (prompt, response, model, media_type, session_id, user_id).
+- Thumbs feedback writes `quality_score` (+1 / −1) on the same row — your future model's training set.
+
+## File map (new)
+
+```
+backend/
+  migrations/001_enterprise_upgrade.sql
+  src/
+    services/{session,billing,training,google-auth}.service.js
+    middlewares/credits.middleware.js
+    controllers/{session,feedback,user}.controller.js
+    routes/v1/{index,auth,chat,users,sessions,feedback}.routes.js
+    utils/password.js                  # rewritten with pepper
+frontend/
+  tailwind.config.js, postcss.config.js
+  src/
+    components/layout/{AppShell,Sidebar,SessionGroup}.js
+    components/chat/{Composer,MessageBubble,Typewriter,SkeletonBubble,TypingDots,FeedbackButtons}.js
+    components/modals/{GlassModal,SettingsModal,ProfileModal,CreditsModal}.js
+    components/CreditGuard.js
+    pages/{Chat,AuthCallback}.js       # reworked
+    services/{session,feedback,user}.service.js
+```

@@ -15,6 +15,7 @@ import {
   FolderOpen,
   Search,
   X,
+  Github,
 } from "lucide-react";
 import atelierLogo from "@/assets/atelier-logo.png";
 import { SmartLogo } from "@/components/SmartLogo";
@@ -311,6 +312,19 @@ export function AppSidebar() {
           <LogOut className="w-4 h-4 group-data-[collapsible=icon]:mr-0 mr-2" />
           <span className="group-data-[collapsible=icon]:hidden">Sign out</span>
         </Button>
+
+        <a
+          href="https://github.com/sheikhkaifsadiq"
+          target="_blank"
+          rel="noreferrer"
+          className="mt-1 flex items-center gap-2 rounded-md px-2 py-1.5 text-[11px] text-muted-foreground hover:text-foreground transition group-data-[collapsible=icon]:justify-center"
+          title="Designed & built by Sheikh Kaif Sadiq"
+        >
+          <Github className="w-3.5 h-3.5 shrink-0" />
+          <span className="group-data-[collapsible=icon]:hidden">
+            Built by Sheikh Kaif Sadiq
+          </span>
+        </a>
       </SidebarFooter>
     </Sidebar>
   );
