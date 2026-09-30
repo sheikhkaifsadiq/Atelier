@@ -1,6 +1,6 @@
 // Server-only. Reads OPENAI_API_KEY from process.env (now containing Groq API Key).
-export const MODEL_VERSION = "llama-3.1-8b-instant";
-const GATEWAY_URL = "https://api.groq.com/openai/v1/chat/completions";
+export const MODEL_VERSION = "gemini-1.5-flash";
+const GATEWAY_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
 
 const SYSTEM_PROMPT =
   "You are 'Atelier', a custom independent AI assistant. " +
@@ -23,8 +23,8 @@ export type ChatMsg = {
 };
 
 export async function callGemini(messages: ChatMsg[]): Promise<string> {
-  const key = process.env.OPENAI_API_KEY;
-  if (!key) throw new Error("Missing OPENAI_API_KEY");
+  const key = process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
+  if (!key) throw new Error("Missing GEMINI_API_KEY");
 
   const res = await fetch(GATEWAY_URL, {
     method: "POST",
